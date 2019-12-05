@@ -17,8 +17,9 @@ parser.add_argument('--load_path', default="result/dec0722", help='모델 로드
 parser.add_argument('--mode', default='dec')
 parser.add_argument('--beam', default=None, type=int)
 parser.add_argument('--length', default=2048, type=int)
-parser.add_argument('--save_path', default='bin/generated.mid', type=str)
-
+parser.add_argument('--save_path', default='generated.mid', type=str)
+parser.add_argument('--midi_path', type=str)
+parser.add_argument('--crop_length', type=int)
 
 args = parser.parse_args()
 
@@ -30,7 +31,8 @@ mode = args.mode
 beam = args.beam
 length = args.length
 save_path= args.save_path
-
+midi_path = args.midi_path
+crop_length = args.crop_length
 
 current_time = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
 gen_log_dir = 'logs/mt_decoder/generate_'+current_time+'/generate'
@@ -48,13 +50,13 @@ if mode == 'enc-dec':
             debug=False, loader_path=load_path)
 else:
     print(">> generate with decoder wise... beam size is {}".format(beam))
-    mt = MusicTransformerDecoder(loader_path=load_path)
+    mt = MusicTransformerDecoder(loader_path=load_path, max_seq=max_seq)
 
-inputs = encode_midi('dataset/midi/BENABD10.mid')
+inputs = encode_midi(midi_path)
 
 
 with gen_summary_writer.as_default():
-    result = mt.generate(inputs[:10], beam=beam, length=length, tf_board=True)
+    result = mt.generate(inputs[:crop_length], beam=beam, length=length, tf_board=True)
 
 for i in result:
     print(i)

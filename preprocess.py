@@ -14,7 +14,13 @@ import random
 
 
 def preprocess_midi(path):
-    return encode_midi(path, augumentation=False)
+    
+#     revised code
+    return encode_midi(path)
+    
+#     origin code
+#     return encode_midi(path, augumentation=False)
+
 #     note_seq = NoteSeq.from_midi_file(path)
 #     note_seq.adjust_time(-note_seq.notes[0].start)
 #     event_seq = EventSeq.from_note_seq(note_seq)
